@@ -1,37 +1,24 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+// React Native imports
+import { useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Expo imports
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+// Local imports
+import BottomTabLayout from './bottomTabNavigator';
+import NewReminderTab from './newReminder';
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+const Stack = createNativeStackNavigator();
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function TabLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <Stack.Navigator>
+      <Stack.Screen name="bottomTabNavigator" component={BottomTabLayout} options={{ headerShown: false }} />
+      <Stack.Screen name="newReminder" component={NewReminderTab} options={NewReminderTab.navigationOptions} />
+    </Stack.Navigator>
   );
 }
+
+export default TabLayout;

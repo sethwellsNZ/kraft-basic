@@ -27,7 +27,9 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      ["expo-sensors", {"motionPermission" : "Allow $(PRODUCT_NAME) to read your device's motion?"}],
+      ["expo-location", {"locationAlwaysAndWhenInUsePermission" : "Allow $(PRODUCT_NAME) to use your location?"}]
     ],
     "experiments": {
       "typedRoutes": true
