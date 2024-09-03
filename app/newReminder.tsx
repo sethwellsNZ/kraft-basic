@@ -1,39 +1,49 @@
 // React imports
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { DeviceMotion } from 'expo-sensors';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { DeviceMotion, DeviceMotionMeasurement } from 'expo-sensors';
+import type { Subscription } from 'expo-sensors/build/Pedometer';
 
 // Expo imports
 import * as Location from 'expo-location';
 
-// Third party imports
-import axios from 'axios'; // <-- Remove this package & kson server
-
 // Local imports
 import Card from '../components/Card';
-
-function deviceMotionCallback(devMotion : any) {
-  console.log(devMotion);
-}
+import { useNavigation } from '@react-navigation/native';
 
 function NewReminderTab() {
-  const [lat, setLat] = useState(null);
-  const [lon, setLon] = useState(null);
-  const [errMsg, setErrMsg] = useState(null);
+  // Initialisation
+  const [lat, setLat] = useState<number | undefined>(undefined);
+  const [lon, setLon] = useState<number | undefined>(undefined);
+  const [accelX, setAccelX] = useState<number | undefined>(undefined);
+  const [accelY, setAccelY] = useState<number | undefined>(undefined);
+  const [accelZ, setAccelZ] = useState<number | undefined>(undefined);
+  var locationGranted : boolean = false;
 
-  let locationGranted : boolean = false;
+  // Define accelerometer reading behavior, read every 200ms
+  useEffect(() => {
+    const motionSub : Subscription = DeviceMotion.addListener(function (motion : DeviceMotionMeasurement) {
+      setAccelX(motion.acceleration?.x);
+      setAccelY(motion.acceleration?.y);
+      setAccelZ(motion.acceleration?.z);
+      console.log(`X: ${motion.acceleration?.x}`);
+      console.log(`Y: ${motion.acceleration?.y}`);
+      console.log(`Z: ${motion.acceleration?.z}`);
+    });
+    DeviceMotion.setUpdateInterval(200)
+    return () => {console.log("Navigated away, stopping DeviceMotion listener..."), motionSub.remove()};
+  }, []);
 
-  DeviceMotion.addListener(deviceMotionCallback);
-
-  // Define location reading behavior, read every 200ms
+  // Define location listener, read every 200ms
   useEffect(() => {
     const toggle = setInterval(() => {
       (async () => {
       
+        // Get location permission.
         if (!locationGranted) {
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
-            setErrMsg('Permission to access location was denied');
+            Alert.alert('Location denied', 'Permission to access location was denied');
             console.log('Location permission denied');
             return;
           } else {
@@ -49,7 +59,10 @@ function NewReminderTab() {
         console.log(`Lon: ${location.coords.longitude}`);
       })();
     }, 200);
-    return () => clearInterval(toggle);
+    return () => {
+      console.log("Navigated away, stopping Location listener...");
+      clearInterval(toggle);
+    };
   }, []);
 
   return (
@@ -57,17 +70,21 @@ function NewReminderTab() {
       <Card>
         <View>
           <Text>Lat:</Text>
-          <Text>{lat}</Text>
+          <Text>{(lat !== Number(0.00000000)) ? lat : ""}</Text>
           <Text>Lon:</Text>
-          <Text>{lon}</Text>
+          <Text>{(lon !== Number(0.00000000)) ? lon : ""}</Text>
         </View>
       </Card>
       <Card>
         <View>
-          <Text>Lat:</Text>
-          <Text>{lat}</Text>
-          <Text>Lon:</Text>
-          <Text>{lon}</Text>
+          <Text>Acceleration</Text>
+          <Text>X:</Text>
+          <Text>{accelX}</Text>
+          <Text>Y:</Text>
+          <Text>{accelY}</Text>
+          <Text>Z:</Text>
+          <Text>{accelZ}</Text>
+
         </View>
       </Card>
     </ScrollView>
