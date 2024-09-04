@@ -34,6 +34,7 @@ function NewReminderTab() {
   const [accelX, setAccelX] = useState<number | undefined>(undefined);
   const [accelY, setAccelY] = useState<number | undefined>(undefined);
   const [accelZ, setAccelZ] = useState<number | undefined>(undefined);
+  const [avgPastReadings, setAvgPastReadings] = useState<number | undefined>(undefined);
 
   var locationGranted : boolean = false;
 
@@ -53,9 +54,9 @@ function NewReminderTab() {
       // Essentially checks if ther was a sudden acceleration after very little movement for last 20s (motion sampled at 5hz)
       if (stdDeviationsHead === accelStdDeviations.length - 1  && accelStdDeviations[stdDeviationsHead] !== undefined) {
         console.log(accelStdDeviations);
-        let avgPastReadings : number = accelStdDeviations.slice(0, accelStdDeviations.length-2).reduce((a, b) => a+b)/accelStdDeviations.length;
-        console.log(`Avg: ${avgPastReadings}`)
-        if (avgPastReadings < 0.2 && (accelStdDeviations[stdDeviationsHead] > 0.5)) {
+        setAvgPastReadings(accelStdDeviations.slice(0, accelStdDeviations.length-2).reduce((a, b) => a+b)/accelStdDeviations.length);
+        // console.log(`Avg: ${avgPastReadings}`)
+        if (avgPastReadings! < 0.2 && (accelStdDeviations[stdDeviationsHead] > 0.5)) {
             console.log("Stood Up");
             Notifications.scheduleNotificationAsync({
               content: {
@@ -176,6 +177,12 @@ function NewReminderTab() {
           <Text>Z:</Text>
           <Text>{accelZ}</Text>
 
+        </View>
+      </Card>
+      <Card>
+        <View>
+          <Text>Avg Abs Acceleration (Last 20s):</Text>
+          <Text>{(avgPastReadings !== Number(0.00000000)) ? avgPastReadings : ""}</Text>
         </View>
       </Card>
     </ScrollView>
