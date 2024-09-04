@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -28,11 +32,30 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-sensors", {"motionPermission" : "Allow $(PRODUCT_NAME) to read your device's motion?"}],
-      ["expo-location", {"locationAlwaysAndWhenInUsePermission" : "Allow $(PRODUCT_NAME) to use your location?"}]
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Allow $(PRODUCT_NAME) to read your device's motion?"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location?"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "955a3216-5c4a-4b69-b3ab-5f0bea961b20"
+      }
+    },
+    "owner": "ineruditus"
   }
 }

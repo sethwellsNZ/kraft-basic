@@ -26,11 +26,12 @@ function NewReminderTab() {
       setAccelX(motion.acceleration?.x);
       setAccelY(motion.acceleration?.y);
       setAccelZ(motion.acceleration?.z);
-      console.log(`X: ${motion.acceleration?.x}`);
-      console.log(`Y: ${motion.acceleration?.y}`);
-      console.log(`Z: ${motion.acceleration?.z}`);
+      // console.log(`X: ${motion.acceleration?.x}`);
+      // console.log(`Y: ${motion.acceleration?.y}`);
+      // console.log(`Z: ${motion.acceleration?.z}`);
+      console.log(motion);
     });
-    DeviceMotion.setUpdateInterval(200)
+    DeviceMotion.setUpdateInterval(200);
     return () => {console.log("Navigated away, stopping DeviceMotion listener..."), motionSub.remove()};
   }, []);
 

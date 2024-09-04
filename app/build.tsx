@@ -17,7 +17,7 @@ BuildTab.navigationOptions = ({ navigation }) => ({
   headerRight: ({ color }) => (
     <View>
     <TouchableOpacity
-      onPress={() => {console.log(`Navigated using ${typeof navigation}`);navigation.navigate('newReminder')}}
+      onPress={() => {navigation.navigate('newReminder')}}
       style={{ marginRight: 15 }}
     >
       <Text style={{ fontSize: 30, color: color }}>+</Text>
